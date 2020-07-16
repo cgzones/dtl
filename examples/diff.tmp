@@ -1,0 +1,47 @@
+--- strdiff3.cpp	2018-04-23 17:14:11 +0200
++++ strdiff.cpp	2018-04-23 17:14:11 +0200
+@@ -7,11 +7,11 @@
+ 
+ using namespace std;
+ 
+-using dtl::Diff3;
++using dtl::Diff;
+ 
+ int main(int argc, char *argv[]){
+     
+-    if (isFewArgs(argc, 4)) {
++    if (isFewArgs(argc)) {
+         cerr << "Too few arguments." << endl;
+         return -1;
+     }
+@@ -21,15 +21,22 @@
+ 
+     sequence A(argv[1]);
+     sequence B(argv[2]);
+-    sequence C(argv[3]);
+     
+-    Diff3< elem, sequence > diff3(A, B, C);
+-    diff3.compose();
+-    if (!diff3.merge()) {
+-        cerr << "conflict." << endl;
+-        return 0;
+-    }
+-    cout << "result:" << diff3.getMergedSequence() << endl;
++    Diff< elem, sequence > d(A, B);
++    //d.onOnlyEditDistance();
++    d.compose();
+     
++    // editDistance
++    cout << "editDistance:" << d.getEditDistance() << endl;
++    
++    // Longest Common Subsequence
++    vector< elem > lcs_v = d.getLcsVec();
++    sequence       lcs_s(lcs_v.begin(), lcs_v.end());
++    cout << "LCS:" << lcs_s << endl;
++    
++    // Shortest Edit Script
++    cout << "SES" << endl;
++    d.printSES();
++    
+     return 0;
+ }
