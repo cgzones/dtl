@@ -57,7 +57,6 @@ namespace dtl {
         Ses (bool moveDel) : onlyAdd(true), onlyDelete(true), onlyCopy(true), deletesFirst(moveDel) {
             nextDeleteIdx = 0;
         }
-        ~Ses () {}
         
         bool isOnlyAdd () const {
             return onlyAdd;
@@ -94,7 +93,7 @@ namespace dtl {
                 onlyCopy   = false;
                 onlyAdd    = false;
                 if (deletesFirst) {
-                    sequence.insert(sequence.begin() + nextDeleteIdx, pe);
+                    sequence.insert(sequence.begin() + static_cast<long>(nextDeleteIdx), pe);
                     nextDeleteIdx++;
                 }
                 break;

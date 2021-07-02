@@ -48,7 +48,6 @@ namespace dtl {
     {
     public :
         Lcs ()  {}
-        ~Lcs () {}
     };
 }
 

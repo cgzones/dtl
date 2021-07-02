@@ -270,10 +270,10 @@ namespace dtl {
             do {
                 ++p;
                 for (long long k=-p;k<=static_cast<long long>(delta)-1;++k) {
-                    fp[k+offset] = snake(k, fp[k-1+offset]+1, fp[k+1+offset]);
+                    fp[k+static_cast<long long>(offset)] = snake(k, fp[k-1+static_cast<long long>(offset)]+1, fp[k+1+static_cast<long long>(offset)]);
                 }
                 for (long long k=static_cast<long long>(delta)+p;k>=static_cast<long long>(delta)+1;--k) {
-                    fp[k+offset] = snake(k, fp[k-1+offset]+1, fp[k+1+offset]);
+                    fp[k+static_cast<long long>(offset)] = snake(k, fp[k-1+static_cast<long long>(offset)]+1, fp[k+1+static_cast<long long>(offset)]);
                 }
                 fp[delta+offset] = snake(static_cast<long long>(delta), fp[delta-1+offset]+1, fp[delta+1+offset]);
             } while (fp[delta+offset] != static_cast<long long>(N) && pathCordinates.size() < MAX_CORDINATES_SIZE);
@@ -290,10 +290,10 @@ namespace dtl {
             }
             
             while(r != -1) {
-                cordinate.x = pathCordinates[(size_t)r].x;
-                cordinate.y = pathCordinates[(size_t)r].y;
+                cordinate.x = pathCordinates[static_cast<size_t>(r)].x;
+                cordinate.y = pathCordinates[static_cast<size_t>(r)].y;
                 epc.push_back(cordinate);
-                r = pathCordinates[(size_t)r].k;
+                r = pathCordinates[static_cast<size_t>(r)].k;
             }
             
             // record Longest Common Subsequence & Shortest Edit Script
@@ -477,7 +477,7 @@ namespace dtl {
                     if (static_cast<long long>(common[0].size()) >= DTL_SEPARATE_SIZE) {
                         long long c0size = static_cast<long long>(common[0].size());
                         rotate(common[0].begin(), 
-                               common[0].begin() + (size_t)c0size - DTL_SEPARATE_SIZE, 
+                               common[0].begin() + static_cast<long>(c0size) - DTL_SEPARATE_SIZE,
                                common[0].end());
                         for (long long i=0;i<c0size - DTL_SEPARATE_SIZE;++i) {
                             common[0].pop_back();
@@ -542,8 +542,8 @@ namespace dtl {
          * initialize
          */
         void init () {
-            M = distance(A.begin(), A.end());
-            N = distance(B.begin(), B.end());
+            M = static_cast<size_t>(distance(A.begin(), A.end()));
+            N = static_cast<size_t>(distance(B.begin(), B.end()));
             if (M < N) {
                 swapped = false;
             } else {
@@ -552,26 +552,27 @@ namespace dtl {
                 swapped = true;
             }
             editDistance     = 0;
-            delta            = N - M;
+            delta            = static_cast<size_t>(N - M);
             offset           = M + 1;
             huge             = false;
             trivial          = false;
             editDistanceOnly = false;
-            fp               = NULL;
+            fp               = nullptr;
         }
         
         /**
          * search shortest path and record the path
          */
         long long snake(const long long& k, const long long& above, const long long& below) {
-            long long r = above > below ? path[(size_t)k-1+offset] : path[(size_t)k+1+offset];
+            long long r = above > below ? path[static_cast<size_t>(k)+offset-1] : path[static_cast<size_t>(k)+1+offset];
             long long y = max(above, below);
             long long x = y - k;
-            while ((size_t)x < M && (size_t)y < N && (swapped ? cmp.impl(B[(size_t)y], A[(size_t)x]) : cmp.impl(A[(size_t)x], B[(size_t)y]))) {
+            while (static_cast<size_t>(x) < M && static_cast<size_t>(y) < N
+            		&& (swapped ? cmp.impl(B[static_cast<size_t>(y)], A[static_cast<size_t>(x)]) : cmp.impl(A[static_cast<size_t>(x)], B[static_cast<size_t>(y)]))) {
                 ++x;++y;
             }
             
-            path[(size_t)k+offset] = static_cast<long long>(pathCordinates.size());
+            path[static_cast<size_t>(k)+offset] = static_cast<long long>(pathCordinates.size());
             if (!editDistanceOnly) {
                 P p;
                 p.x = x;p.y = y;p.k = r;
@@ -636,22 +637,22 @@ namespace dtl {
                 // trivial difference
                 if (trivialEnabled()) {
                     if (!wasSwapped()) {
-                        recordOddSequence(x_idx, M, x, SES_DELETE);
-                        recordOddSequence(y_idx, N, y, SES_ADD);
+                        recordOddSequence(x_idx, static_cast<long long>(M), x, SES_DELETE);
+                        recordOddSequence(y_idx, static_cast<long long>(N), y, SES_ADD);
                     } else {
-                        recordOddSequence(x_idx, M, x, SES_ADD);
-                        recordOddSequence(y_idx, N, y, SES_DELETE);
+                        recordOddSequence(x_idx, static_cast<long long>(M), x, SES_ADD);
+                        recordOddSequence(y_idx, static_cast<long long>(N), y, SES_DELETE);
                     }
                     return true;
                 }
                 
                 // nontrivial difference
-                sequence A_(A.begin() + (size_t)x_idx - 1, A.end());
-                sequence B_(B.begin() + (size_t)y_idx - 1, B.end());
+                sequence A_(A.begin() + static_cast<long>(x_idx) - 1, A.end());
+                sequence B_(B.begin() + static_cast<long>(y_idx) - 1, B.end());
                 A        = A_;
                 B        = B_;
-                M        = distance(A.begin(), A.end());
-                N        = distance(B.begin(), B.end());
+                M        = static_cast<unsigned long>(distance(A.begin(), A.end()));
+                N        = static_cast<unsigned long>(distance(B.begin(), B.end()));
                 delta    = N - M;
                 offset   = M + 1;
                 delete[] fp;
